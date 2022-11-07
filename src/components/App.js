@@ -5,31 +5,57 @@ import User from "../models/user";
 const App = () => {
 
   const [obj, setObj] = useState({ name: "", email: "", password: "" });
-  const [copyobj, setCopyobj] = useState({ name1: "", email1: "", password1: "" });
+  const [copyobj, setCopyobj] = useState({ name1: "", email1: "", password1: "", password2: "" });
+  const [logInfo, setLoginfo] = useState({ email: "", password: "" });
   const [status, setStatus] = useState(false);
+  const [status2, setStatus2] = useState(false);
 
   const handlechange = () => {
     console.log(copyobj);
     let obj2 = new User(copyobj.email1, copyobj.password1, copyobj.name1);
     console.log(obj2);
     setObj({ ...obj2 });
-    setStatus(true);
+
+    if (copyobj.password1 == copyobj.password2) {
+      setStatus2(true);
+
+    }
   }
   const handlechange2 = (event) => {
+    event.persist();
     if (event.target.id == "signupName") {
-      setCopyobj({ name1: event.target.value, email1: copyobj.email1, password1: copyobj.password1 });
+      setCopyobj({ name1: event.target.value, email1: copyobj.email1, password1: copyobj.password1, password2: copyobj.password2 });
       return
     }
     else if (event.target.id == "signupEmail") {
-      setCopyobj({ name1: copyobj.name1, email1: event.target.value, password1: copyobj.password1 });
+      setCopyobj({ name1: copyobj.name1, email1: event.target.value, password1: copyobj.password1, password2: copyobj.password2 });
       return;
     }
+    else if (event.target.id == "signupConfirmPassword") {
+      setCopyobj({ name1: copyobj.name1, email1: copyobj.email1, password1: copyobj.password1, password2: event.target.value });
+      return;
+    }
+
     else {
-      setCopyobj({ name1: copyobj.name1, email1: copyobj.email1, password1: event.target.value });
+      setCopyobj({ name1: copyobj.name1, email1: copyobj.email1, password1: event.target.value, password2: copyobj.password2 });
+    }
+  }
+
+  const handlechange3 = (event) => {
+    if (event.target.id == "loginEmail") {
+      setLoginfo({ email: event.target.value, password: logInfo.password });
+      return
+    }
+    else if (event.target.id = "loginPassword") {
+      setLoginfo({ email: logInfo.email, password: event.target.value });
+      return
     }
   }
   const handlelogin = () => {
-    console.log("aka");
+    if (copyobj.password1 == logInfo.password && copyobj.email1 == logInfo.email) {
+      setStatus(true);
+    }
+    // setStatus(true);
   }
   const handlelogout = () => {
     setStatus(false);
@@ -38,7 +64,7 @@ const App = () => {
 
   return (
     <div id="main">
-      <table id="all-users">
+      {status2 ? <table id="all-users">
         <tbody>
           <tr>
             <th>Name</th>
@@ -51,7 +77,8 @@ const App = () => {
             <td>{obj.password}</td>
           </tr>
         </tbody>
-      </table>
+      </table> : null
+      }
 
       {status == false ? <div>
         <form className="signup-form">
@@ -66,17 +93,19 @@ const App = () => {
             type="password"
             name="signupConfirmPassword"
             id="signupConfirmPassword"
+            value={copyobj.password2}
+            onChange={handlechange2}
           />
 
         </form>
-        <button id="signup-button" onClick={handlechange}  >Signup</button>
+        <button id="signup-button" onClick={handlechange}>Signup</button>
         <form className="login-styles">
           <label htmlFor="loginEmail">Email</label>
-          <input id="loginEmail" name="loginEmail" type="email" />
+          <input id="loginEmail" name="loginEmail" type="email" value={logInfo.email} onChange={handlechange3} />
           <label htmlFor="loginPassword">Password</label>
-          <input id="loginPassword" name="loginPassword" type="password" />
+          <input id="loginPassword" name="loginPassword" type="password" value={logInfo.password} onChange={handlechange3} />
         </form>
-        <button id="login-button" onClick={handlelogin}  >Login</button>
+        <button id="login-button" onClick={handlelogin} >Login</button>
       </div> : null}
 
       {status ? <div>

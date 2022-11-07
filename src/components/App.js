@@ -11,9 +11,9 @@ const App = () => {
   const [status2, setStatus2] = useState(false);
 
   const handlechange = () => {
-    console.log(copyobj);
+    // console.log(copyobj);
     let obj2 = new User(copyobj.email1, copyobj.password1, copyobj.name1);
-    console.log(obj2);
+    // console.log(obj2);
     setObj({ ...obj2 });
 
     if (copyobj.password1 == copyobj.password2) {
